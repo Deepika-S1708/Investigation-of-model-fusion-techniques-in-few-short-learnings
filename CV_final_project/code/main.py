@@ -219,54 +219,28 @@ def main():
 
     datasets = Datasets(ARGS.data, ARGS.task)
     
-
-    if ARGS.task == '1':
-        model = VGGModel()
-        checkpoint_path = "checkpoints/vgg_model" + os.sep + timestamp + os.sep
-        logs_path = "logs" + os.sep + "vgg_model" + os.sep + timestamp + os.sep
         
-        model(tf.keras.Input(shape=(224, 224, 3)))
-
-        # Print summaries for both parts of the model
-        # model.vgg16.summary()
-        # model.head.summary()
-
-        # Load base of VGG model
-        model.vgg16.load_weights(ARGS.load_vgg, by_name=True)
-    else:
-        
-        model = Pretrained_model(ARGS.model_name)
-        checkpoint_path = "checkpoints/"+"{}_model".format(ARGS.model_name) + os.sep + timestamp + os.sep
-        logs_path = "logs" + os.sep + "{}_model".format(ARGS.model_name) + os.sep + timestamp + os.sep
-        
-        # Print summaries for both parts of the model
-        model(tf.keras.Input(shape=(224, 224, 3)))
-
-        # model.base_model.summary()
-        # model.head.summary()
-        model.summary()
-        
-        # model.head1.load_weights('checkpoints/vgg_model/050624-173657/model.27_0.7584589719772339.weights.h5')
-        # model.head2.load_weights('checkpoints/resnet_model/050224-134004/model.29_0.7708542943000793.weights.h5')
-        # model.head3.load_weights('checkpoints/efficientnet_model/050224-135859/model.49_0.7628140449523926.weights.h5')
-        
-        # model.head.load_weights('checkpoints/ensemble_model/050624-212347/model.0_0.733668327331543.weights.h5')
-        # model.head1.load_weights('checkpoints/vgg_model/050624-190706/model.21_0.6690117120742798.weights.h5')
-        # model.head2.load_weights('checkpoints/resnet_model/050224-155957/model.35_0.7343383431434631.weights.h5')
-        # model.head3.load_weights('checkpoints/efficientnet_model/050224-155645/model.37_0.6546063423156738.weights.h5')
-        
-        
+    model = Pretrained_model(ARGS.model_name)
+    checkpoint_path = "checkpoints/"+"{}_model".format(ARGS.model_name) + os.sep + timestamp + os.sep
+    logs_path = "logs" + os.sep + "{}_model".format(ARGS.model_name) + os.sep + timestamp + os.sep
+    
+    # Print summaries for both parts of the model
+    model(tf.keras.Input(shape=(224, 224, 3)))
+    
+    # model.base_model.summary()
+    # model.head.summary()
+    model.summary()
+    
+    # model.head1.load_weights('checkpoints/vgg_model/050624-173657/model.27_0.7584589719772339.weights.h5')
+    # model.head2.load_weights('checkpoints/resnet_model/050224-134004/model.29_0.7708542943000793.weights.h5')
+    # model.head3.load_weights('checkpoints/efficientnet_model/050224-135859/model.49_0.7628140449523926.weights.h5')
+    
+    # model.head.load_weights('checkpoints/ensemble_model/050624-212347/model.0_0.733668327331543.weights.h5')
+    # model.head1.load_weights('checkpoints/vgg_model/050624-190706/model.21_0.6690117120742798.weights.h5')
+    # model.head2.load_weights('checkpoints/resnet_model/050224-155957/model.35_0.7343383431434631.weights.h5')
+    # model.head3.load_weights('checkpoints/efficientnet_model/050224-155645/model.37_0.6546063423156738.weights.h5')
 
         
-        # Load base of VGG model
-        # model.vgg16.load_weights(ARGS.load_vgg, by_name=True)
-
-    # Load checkpoints
-    # if ARGS.load_checkpoint is not None:
-    #     if ARGS.task == '1':
-    #         model.load_weights(ARGS.load_checkpoint, by_name=False)
-    #     else:
-    #         model.head.load_weights(ARGS.load_checkpoint, by_name=False)
 
     # Make checkpoint directory if needed
     if not ARGS.evaluate and not os.path.exists(checkpoint_path):
@@ -280,22 +254,17 @@ def main():
         
 
     if ARGS.evaluate:
-        if (ARGS.task == '1'):
-            model.load_weights(ARGS.load_checkpoint)
-        else:
-            model.head.load_weights(ARGS.load_checkpoint)
+        model.head.load_weights(ARGS.load_checkpoint)
+        
             
-                
-            model.head1.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head1.'))
-            model.head2.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head2.'))
-            model.head3.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head3.'))
+        model.head1.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head1.'))
+        model.head2.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head2.'))
+        model.head3.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head3.'))
             
             
-        # test(model, datasets.test_data)
+        test(model, datasets.test_data)
 
 
-        # the lime-image flag when calling main.py to investigate
-        # i.e. python main.py --evaluate --lime-image test/Bedroom/image_003.jpg
         path = ARGS.lime_image
         LIME_explainer(model, ARGS.model_name, path, datasets.preprocess_fn, timestamp)
     else:
