@@ -17,6 +17,7 @@ The project consists of the following files:
 
 For base models, we have implemented three state-of-the-art CNN model architectures, including VGG16, ResNet50, and EfficientNetV2L. For task, we have four tasks, including base model fine-tuning, and three fusion strategies. To run the project, following command shows how to run specific task with specific model architecture.
 
+### Fine-tuning
 For base model fine-tune (task 0), simply changing model name for different model architectures.
 ```python
 !python main.py --task 0 --model_name 'vgg'
@@ -26,4 +27,23 @@ For ensemble model, three fusion methods are coded in task 1, task 2, and task 3
 ```python
 !python main.py --task 1 --model_name 'ensemble'
 ```
+
+### Evaluation
+
+For evaluation, --evaluate command need to add for evaluation. If going to evaluate base model and fusion III performance, we could provide the path for fine-tuned model weights in command. However, for fusion I and fusion II, path for models' weight need to be modified in main.py. 
+
+For base model and fusion III evaluation.
+```python
+!python main.py --task 0 --model_name 'vgg' --load-checkpoint [path_to_checkpoints] --evaluate --lime-image [directory_for_heatmaps]
+```
+
+```python
+!python main.py --task 3 --model_name 'ensenble' --load-checkpoint [path_to_checkpoints] --evaluate --lime-image [directory_for_heatmaps]
+```
+
+For fusion I and fusion II evaluation.
+```python
+!python main.py --task 1 --model_name 'ensenble' --load-checkpoint '' --evaluate --lime-image [directory_for_heatmaps]
+```
+
 
