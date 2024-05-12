@@ -15,13 +15,15 @@ The project consists of the following files:
 
 ## Usage
 
-For base model fine-tune, simply changing model name for different model architectures.
+For base models, we have implemented three state-of-the-art CNN model architectures, including VGG16, ResNet50, and EfficientNetV2L. For task, we have four tasks, including base model fine-tuning, and three fusion strategies. To run the project, following command shows how to run specific task with specific model architecture.
+
+For base model fine-tune (task 0), simply changing model name for different model architectures.
 ```python
-!python main.py --model_name 'vgg'
+!python main.py --task 0 --model_name 'vgg'
 ```
 
-For ensemble model, there are some configuration in main.py and model.py need to be set for specific fusion strategy.
+For ensemble model, three fusion methods are coded in task 1, task 2, and task 3.
 ```python
-!python main.py --model_name 'ensemble'
+!python main.py --task 1 --model_name 'ensemble'
 ```
 
