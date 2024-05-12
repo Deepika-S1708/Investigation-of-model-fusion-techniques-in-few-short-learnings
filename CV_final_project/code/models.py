@@ -33,19 +33,20 @@ class Pretrained_model(tf.keras.Model):
                 weights='imagenet',
                 classifier_activation='softmax',
                 include_top=False)
-                
-#         if (self.model_name == 'resnet'):
-#             self.base_model = self.resnet
+
+        # For base models fine-tune
+        if (self.model_name == 'resnet'):
+            self.base_model = self.resnet
             
-#         elif (self.model_name == 'efficientnet'):
-#             self.base_model = self.efficientnet
+        elif (self.model_name == 'efficientnet'):
+            self.base_model = self.efficientnet
             
-#         elif (self.model_name == 'vgg'):
-#             self.base_model = self.vgg
+        elif (self.model_name == 'vgg'):
+            self.base_model = self.vgg
             
-#         else:
-#             print('Not specify')
-#             return
+        else:
+            print('Not specify')
+            return
 
         # For Base models
         self.head = [
@@ -56,96 +57,105 @@ class Pretrained_model(tf.keras.Model):
         ]
 
         # For fusion I
-        self.head = [
-            tf.keras.layers.Average()
-        ]
+        # self.head = [
+        #     tf.keras.layers.Average()
+        # ]
 
-        # For fusion II
-        self.head = [
-              Dense(15, activation='softmax')
-        ]
+        # # For fusion II
+        # self.head = [
+        #       Dense(15, activation='softmax')
+        # ]
         
+        # # For fusion III
+        # self.head = [
+        #       Dense(128, activation='relu'),
+        #       Dense(15, activation='softmax')
+        # ]
+
+        
+        
+        # For fusion I and II
+        # self.head1 = [
+        #       Flatten(),
+        #       Dense(512, activation='relu', trainable=False),
+        #       Dense(128, activation='relu', trainable=False),
+        #       Dense(15, activation='softmax', trainable=False) 
+        # ]
+        
+        # self.head2 = [
+        #       Flatten(),
+        #       Dense(512, activation='relu', trainable=False),
+        #       Dense(128, activation='relu', trainable=False),
+        #       Dense(15, activation='softmax', trainable=False) 
+        # ]
+        
+        # self.head3 = [
+        #       Flatten(),
+        #       Dense(512, activation='relu', trainable=False),
+        #       Dense(128, activation='relu', trainable=False),
+        #       Dense(15, activation='softmax', trainable=False) 
+        # ]
+
         # For fusion III
-        self.head = [
-              Dense(128, activation='relu'),
-              Dense(15, activation='softmax')
-        ]
+        # self.head1 = [
+        #     Flatten(),
+        #       Dense(128, activation='relu')
+        # ]
+        
+        # self.head2 = [
+        #     Flatten(),
+        #       Dense(128, activation='relu')
+        # ]
+        
+        # self.head3 = [
+        #     Flatten(),
+        #       Dense(128, activation='relu')
+        # ]
+        
+        # For base models fine-tuning
+        for layer in self.base_model.layers:
+                layer.trainable = False
 
-        
-        
-        
-        self.head1 = [
-              Flatten(),
-              Dense(512, activation='relu', trainable=False),
-              Dense(128, activation='relu', trainable=False),
-              Dense(15, activation='softmax', trainable=False) 
-        ]
-        
-        self.head2 = [
-              Flatten(),
-              Dense(512, activation='relu', trainable=False),
-              Dense(128, activation='relu', trainable=False),
-              Dense(15, activation='softmax', trainable=False) 
-        ]
-        
-        self.head3 = [
-              Flatten(),
-              Dense(512, activation='relu', trainable=False),
-              Dense(128, activation='relu', trainable=False),
-              Dense(15, activation='softmax', trainable=False) 
-        ]
-        
-#         self.head1 = [
-#             Flatten(),
-#               Dense(128, activation='relu')
-#         ]
-        
-#         self.head2 = [
-#             Flatten(),
-#               Dense(128, activation='relu')
-#         ]
-        
-#         self.head3 = [
-#             Flatten(),
-#               Dense(128, activation='relu')
-#         ]
-        
-        
-        # for layer in self.base_model.layers:
+        # For fusoin methods
+        # for layer in self.vgg.layers:
         #         layer.trainable = False
                 
-        for layer in self.vgg.layers:
-                layer.trainable = False
+        # for layer in self.resnet.layers:
+        #         layer.trainable = False
                 
-        for layer in self.resnet.layers:
-                layer.trainable = False
-                
-        for layer in self.efficientnet.layers:
-                layer.trainable = False
+        # for layer in self.efficientnet.layers:
+        #         layer.trainable = False
         
         self.head = tf.keras.Sequential(self.head, name="model_head") 
-        self.head1 = tf.keras.Sequential(self.head1, name="model_head1") 
-        self.head2 = tf.keras.Sequential(self.head2, name="model_head2") 
-        self.head3 = tf.keras.Sequential(self.head3, name="model_head3") 
+
+        # For fusion methods
+        # self.head1 = tf.keras.Sequential(self.head1, name="model_head1") 
+        # self.head2 = tf.keras.Sequential(self.head2, name="model_head2") 
+        # self.head3 = tf.keras.Sequential(self.head3, name="model_head3") 
 
     def call(self, x):
         """ Passes the image through the network. """
+
+        # For fusion methods
+        # x1 = self.vgg(x)
+        # x1 = self.head1(x1)
         
-        x1 = self.vgg(x)
-        x1 = self.head1(x1)
+        # x2 = self.resnet(x)
+        # x2 = self.head2(x2)
         
-        x2 = self.resnet(x)
-        x2 = self.head2(x2)
-        
-        x3 = self.efficientnet(x)
-        x3 = self.head3(x3)
-                
+        # x3 = self.efficientnet(x)
+        # x3 = self.head3(x3)
+
+        # For fusion II or III
         # x = tf.keras.layers.Concatenate()([x1, x2, x3])
-        x = self.head([x1, x2, x3])
-        
-        # x = self.base_model(x)
+
+        # For fusion I
+        # x = self.head([x1, x2, x3])
+
+        # For base model fine-tune
+        x = self.base_model(x)
     
-        # x = self.head(x)
+        x = self.head(x)
 
         return x
 
