@@ -175,12 +175,10 @@ def main():
     # Run script from location of main.py
     os.chdir(sys.path[0])
     
-    print(ARGS.data)
-
     datasets = Datasets(ARGS.data, ARGS.task)
     
         
-    model = Pretrained_model(ARGS.model_name)
+    model = Pretrained_model(ARGS.model_name, ARGS.task)
     checkpoint_path = "checkpoints/"+"{}_model".format(ARGS.model_name) + os.sep + timestamp + os.sep
     logs_path = "logs" + os.sep + "{}_model".format(ARGS.model_name) + os.sep + timestamp + os.sep
     
