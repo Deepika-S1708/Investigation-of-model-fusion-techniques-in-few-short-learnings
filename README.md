@@ -22,7 +22,7 @@ For base model fine-tune (task 0), simply changing model name for different mode
 !python main.py --task 0 --model_name 'vgg'
 ```
 
-For ensemble model, three fusion methods are coded in task 1, task 2, and task 3.
+For ensemble model, three fusion methods are coded in task 1, task 2, and task 3. Changing the task number could perform different fusion strategies.
 ```python
 !python main.py --task 1 --model_name 'ensemble'
 ```
