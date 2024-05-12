@@ -41,7 +41,7 @@ For base model and fusion III evaluation.
 !python main.py --task 3 --model_name 'ensenble' --load-checkpoint [path_to_checkpoints] --evaluate --lime-image [directory_for_heatmaps]
 ```
 
-For fusion I and fusion II evaluation.
+For fusion I and fusion II evaluation. No need for checkpoints path, need to modified in main.py.
 ```python
 !python main.py --task 1 --model_name 'ensenble' --load-checkpoint '' --evaluate --lime-image [directory_for_heatmaps]
 ```
