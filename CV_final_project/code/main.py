@@ -123,20 +123,7 @@ def LIME_explainer(model, model_name, path, preprocess_fn, timestamp):
         image.astype('double'), model.predict, top_labels=5, hide_color=0,
         num_samples=1000)
 
-    # The top 5 superpixels that are most positive towards the class with the
-    # rest of the image hidden
-    image_and_mask("Top 5 superpixels", positive_only=True, num_features=5,
-                   hide_rest=True)
 
-    # The top 5 superpixels with the rest of the image present
-    image_and_mask("Top 5 with the rest of the image present",
-                   positive_only=True, num_features=5, hide_rest=False)
-
-    # The 'pros and cons' (pros in green, cons in red)
-    image_and_mask("Pros(green) and Cons(red)",
-                   positive_only=False, num_features=10, hide_rest=False)
-
-    # Select the same class explained on the figures above.
     ind = explanation.top_labels[0]
     # Map each explanation weight to the corresponding superpixel
     dict_heatmap = dict(explanation.local_exp[ind])
@@ -159,13 +146,8 @@ def train(model, datasets, checkpoint_path, logs_path, init_epoch):
             log_dir=logs_path,
             update_freq='batch',
             profile_batch=0),
-        ImageLabelingLogger(logs_path, datasets),
         CustomModelSaver(checkpoint_path, ARGS.task, 1)
     ]
-
-    # Include confusion logger in callbacks if flag set
-    if ARGS.confusion:
-        callback_list.append(ConfusionMatrixLogger(logs_path, datasets))
 
     # Begin training
     model.fit(
