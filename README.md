@@ -2,7 +2,7 @@
 
 
 ## Description
-This is a simple project that demonstrates how to write a README file.
+In this extensive research endeavor, our foremost objective is to meticulously examine the transferability of knowledge within deep neural networks. We aim to investigate the performance of various CNN pre-trained models under different data availability scenarios, with few-shot learning setups. We introduce various model fusion strategies to investigate the performance of different CNN models in a few short learning and very limited data for training. Our focus lies in determining the extent to which a model's learned representations in one domain can be effectively leveraged in a few short learning techniques. By systematically varying the amount of data provided during fine-tuning, we seek to uncover the threshold at which pre-trained models begin to exhibit competitive performance on target datasets distinct from their source domain. Through meticulous experimentation, we endeavor to elucidate the intricate interplay between a few short learning constraint data , model architecture, and transfer learning efficacy. This multifaceted approach will not only contribute to our understanding of deep neural network generalization but also provide valuable insights for optimizing model adaptation strategies across diverse domains.
 
 ## Project Structure
 The project consists of the following files:
