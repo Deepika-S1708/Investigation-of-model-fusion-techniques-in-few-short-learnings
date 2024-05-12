@@ -27,7 +27,7 @@ def parse_args():
     """ Performing command-line argument parsing. """
 
     parser = argparse.ArgumentParser(
-        description="Let's train some neural nets!",
+        description="",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '--task',
@@ -38,30 +38,12 @@ def parse_args():
     parser.add_argument(
         '--model_name',
         required=True,
-        choices=['resnet', 'densenet', 'efficientnet', 'inception', 'mobilenet', 'vgg', 'nasnet', 'ensemble'],
+        choices=['resnet', 'efficientnet', 'vgg', 'ensemble'],
         help='''model name.''')
     parser.add_argument(
         '--data',
         default='..'+os.sep+'data'+os.sep,
         help='Location where the dataset is stored.')
-    parser.add_argument(
-        '--load-vgg',
-        default='vgg16_imagenet.h5',
-        help='''Path to pre-trained VGG-16 file (only applicable to
-        task 3).''')
-    parser.add_argument(
-        '--load-checkpoint',
-        default=None,
-        help='''Path to model checkpoint file (should end with the
-        extension .h5). Checkpoints are automatically saved when you
-        train your model. If you want to continue training from where
-        you left off, this is how you would load your weights.''')
-    parser.add_argument(
-        '--confusion',
-        action='store_true',
-        help='''Log a confusion matrix at the end of each
-        epoch (viewable in Tensorboard). This is turned off
-        by default as it takes a little bit of time to complete.''')
     parser.add_argument(
         '--evaluate',
         action='store_true',
@@ -161,7 +143,6 @@ def train(model, datasets, checkpoint_path, logs_path, init_epoch):
 
 
 def test(model, test_data):
-    """ Testing routine. """
 
     # Run model on test set
     model.evaluate(
@@ -206,16 +187,28 @@ def main():
     # Print summaries of the model
     model(tf.keras.Input(shape=(224, 224, 3)))
     
-
     model.summary()
-
-
-    # Load weights for fusion methods
-    # model.head1.load_weights('checkpoints/vgg_model/050624-173657/model.27_0.7584589719772339.weights.h5')
-    # model.head2.load_weights('checkpoints/resnet_model/050224-134004/model.29_0.7708542943000793.weights.h5')
-    # model.head3.load_weights('checkpoints/efficientnet_model/050224-135859/model.49_0.7628140449523926.weights.h5')
-
     
+    if (ARGS.task == 1):
+        model.head.load_weights('checkpoints/ensemble_model/050624-212347/model.0_0.733668327331543.weights.h5')
+        model.head1.load_weights('checkpoints/vgg_model/050624-173657/model.27_0.7584589719772339.weights.h5')
+        model.head2.load_weights('checkpoints/resnet_model/050224-134004/model.29_0.7708542943000793.weights.h5')
+        model.head3.load_weights('checkpoints/efficientnet_model/050224-135859/model.49_0.7628140449523926.weights.h5')
+    elif (ARGS.task == 2):
+        model.head1.load_weights('checkpoints/vgg_model/050624-173657/model.27_0.7584589719772339.weights.h5')
+        model.head2.load_weights('checkpoints/resnet_model/050224-134004/model.29_0.7708542943000793.weights.h5')
+        model.head3.load_weights('checkpoints/efficientnet_model/050224-135859/model.49_0.7628140449523926.weights.h5')
+    elif (ARGS.task == 0 and ARGS.evaluate):
+        model.head.load_weights(ARGS.load_checkpoint)
+    elif (ARGS.task == 3 and ARGS.evaluate):
+        model.head.load_weights(ARGS.load_checkpoint)
+        model.head1.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head1.'))
+        model.head2.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head2.'))
+        model.head3.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head3.'))
+    else:
+        pass
+
+
     # Make checkpoint directory if needed
     if not ARGS.evaluate and not os.path.exists(checkpoint_path):
         os.makedirs(checkpoint_path)
@@ -228,17 +221,7 @@ def main():
         
 
     if ARGS.evaluate:
-        model.head.load_weights(ARGS.load_checkpoint)
-        
-
-        # For fusion methods
-        # model.head1.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head1.'))
-        # model.head2.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head2.'))
-        # model.head3.load_weights(ARGS.load_checkpoint.replace('model.', 'model_head3.'))
-            
-            
         test(model, datasets.test_data)
-
 
         path = ARGS.lime_image
         LIME_explainer(model, ARGS.model_name, path, datasets.preprocess_fn, timestamp)
