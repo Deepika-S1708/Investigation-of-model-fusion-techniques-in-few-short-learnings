@@ -15,4 +15,13 @@ The project consists of the following files:
 
 ## Usage
 
+For base model fine-tune, simply changing model name for different model architectures.
+```python
+!python main.py --model_name 'vgg'
+```
+
+For ensemble model, there are some configuration in main.py and model.py need to be set for specific fusion strategy.
+```python
+!python main.py --model_name 'ensemble'
+```
 
